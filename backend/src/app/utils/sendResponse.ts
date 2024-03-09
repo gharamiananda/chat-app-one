@@ -1,27 +1,27 @@
-import { Response } from "express";
+import { Response } from 'express';
+
+type TMeta = {
+  limit: number;
+  page: number;
+  total: number;
+  totalPage: number;
+};
 
 type TResponse<T> = {
   statusCode: number;
   success: boolean;
   message?: string;
+  meta?: TMeta;
   data: T;
-  meta?: Record<string, unknown>;
 };
 
 const sendResponse = <T>(res: Response, data: TResponse<T>) => {
-  const resSendData: TResponse<T> = {
+  res.status(data?.statusCode).json({
     success: data.success,
-    statusCode: data?.statusCode,
     message: data.message,
-
+    meta: data.meta,
     data: data.data,
-  };
-  if (data.meta) {
-    resSendData.meta = data.meta;
-     resSendData.data= data.data
-
-  }
-  res.status(data?.statusCode).json(resSendData);
+  });
 };
 
 export default sendResponse;
